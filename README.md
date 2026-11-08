@@ -1,4 +1,4 @@
-# StepByStep-ActivityTracker CS364 Assignment 1
+# StepByStep-ActivityTracker CS364 Assignment 2
 แอปนับก้าวเดินและจำนวนครั้งในการเขย่า
 
 ## สมาชิกในกลุ่มและหน้าที่
