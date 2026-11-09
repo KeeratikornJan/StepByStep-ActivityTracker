@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -59,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView tvShakeStatus;
     private TextView tvShakeCount;
     private TextView tvAcceleration;
+    private ActivityHistoryView historyView;
 
     private final ActivityResultLauncher<String> activityPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
@@ -87,6 +89,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvShakeCount = findViewById(R.id.tvShakeCount);
         tvAcceleration = findViewById(R.id.tvAcceleration);
 
+        // ประวัติกิจกรรม (RecyclerView + การ์ด + Dialog รายละเอียด)
+        ViewGroup historyContainer = findViewById(R.id.historyContainer);
+        historyView = new ActivityHistoryView(this, historyContainer);
+        historyContainer.addView(historyView.getView());
+
         initSensors();
         updateStepUi();
         updateShakeUi();
@@ -96,6 +103,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     protected void onResume() {
         super.onResume();
         startSensors();
+        historyView.refresh();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        historyView.close();
+    }
+
+    /** Reload the history list, e.g. after the session logic saves a new session. */
+    public void refreshHistory() {
+        historyView.refresh();
     }
 
     @Override
