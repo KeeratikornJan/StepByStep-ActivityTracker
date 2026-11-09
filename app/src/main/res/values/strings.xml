@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">StepByStepActivityTracker</string>
+
+    <!-- Step counter (ข้อ 1) -->
+    <string name="step_title">จำนวนก้าว</string>
+    <string name="step_status_starting">กำลังเริ่มเซนเซอร์นับก้าว…</string>
+    <string name="step_status_running">เซนเซอร์นับก้าวทำงานอยู่</string>
+    <string name="step_status_unavailable">อุปกรณ์นี้ไม่มีเซนเซอร์นับก้าว (TYPE_STEP_COUNTER)</string>
+    <string name="step_status_waiting_permission">กำลังขอสิทธิ์ตรวจจับการเคลื่อนไหว…</string>
+    <string name="step_status_permission_denied">ไม่ได้รับสิทธิ์ตรวจจับการเคลื่อนไหว จึงนับก้าวไม่ได้</string>
+    <string name="steps_since_open_label">ก้าวตั้งแต่เปิดแอป</string>
+    <string name="raw_steps_format">ค่าดิบจากเซนเซอร์ (ตั้งแต่เปิดเครื่อง): %1$s</string>
+
+    <!-- Shake detection (ข้อ 2) -->
+    <string name="shake_title">การเขย่า</string>
+    <string name="shake_status_starting">กำลังเริ่มเซนเซอร์ความเร่ง…</string>
+    <string name="shake_status_running">เซนเซอร์ตรวจจับการเขย่าทำงานอยู่</string>
+    <string name="shake_status_unavailable">อุปกรณ์นี้ไม่มีเซนเซอร์ความเร่ง (Accelerometer)</string>
+    <string name="shake_count_label">ครั้งที่เขย่า</string>
+    <string name="acceleration_format">ความเร่งปัจจุบัน: %1$s g</string>
 </resources>
