@@ -88,5 +88,12 @@
             android:layout_marginTop="4dp"
             android:textSize="12sp" />
 
+        <!-- ประวัติกิจกรรม (ActivityHistoryView ถูกเพิ่มเข้ามาที่นี่ใน MainActivity) -->
+        <FrameLayout
+            android:id="@+id/historyContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp" />
+
     </LinearLayout>
 </ScrollView>
