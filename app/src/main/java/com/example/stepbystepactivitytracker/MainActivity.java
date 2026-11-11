@@ -8,10 +8,14 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -62,6 +66,42 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView tvAcceleration;
     private ActivityHistoryView historyView;
 
+    // ---------- Session logic ----------
+    private DBHelper dbHelper;
+    private Button btnSession;
+    private TextView tvSessionStatus;
+    private TextView tvSessionSteps;
+    private TextView tvSessionShakes;
+    private TextView tvSessionDuration;
+    private TextView tvAvgSteps;
+    private TextView tvAvgShakes;
+    private TextView tvTotalSteps;
+    private TextView tvTotalShakes;
+    private TextView tvRecord;
+
+    /** ข้อ 3: ค่าเริ่มต้นของ session เอาไว้หักลบกับค่าจาก sensor (session delta) */
+    private boolean sessionActive = false;
+    private long sessionStartSteps = -1;   // -1 = ยังไม่มีค่าจาก sensor ให้ใช้เป็นฐาน
+    private int sessionStartShakes = 0;
+    private long sessionSteps = 0;
+    private int sessionShakes = 0;
+
+    /** ข้อ 4: เวลาเริ่มและระยะเวลาของ session */
+    private long sessionStartElapsed = 0;
+    private long sessionDurationMs = 0;
+
+    /** อัปเดตเวลาบนหน้าจอทุก 1 วินาทีขณะ session ทำงาน */
+    private final Handler ticker = new Handler(Looper.getMainLooper());
+    private final Runnable tickTask = new Runnable() {
+        @Override
+        public void run() {
+            if (!sessionActive) return;
+            sessionDurationMs = SystemClock.elapsedRealtime() - sessionStartElapsed;
+            updateSessionUi();
+            ticker.postDelayed(this, 1000);
+        }
+    };
+
     private final ActivityResultLauncher<String> activityPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
                 if (granted) {
@@ -94,9 +134,27 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         historyView = new ActivityHistoryView(this, historyContainer);
         historyContainer.addView(historyView.getView());
 
+        // ระบบ Session (ข้อ 3-5)
+        dbHelper = new DBHelper(this);
+        btnSession = findViewById(R.id.btnSession);
+        tvSessionStatus = findViewById(R.id.tvSessionStatus);
+        tvSessionSteps = findViewById(R.id.tvSessionSteps);
+        tvSessionShakes = findViewById(R.id.tvSessionShakes);
+        tvSessionDuration = findViewById(R.id.tvSessionDuration);
+        tvAvgSteps = findViewById(R.id.tvAvgSteps);
+        tvAvgShakes = findViewById(R.id.tvAvgShakes);
+        tvTotalSteps = findViewById(R.id.tvTotalSteps);
+        tvTotalShakes = findViewById(R.id.tvTotalShakes);
+        tvRecord = findViewById(R.id.tvRecord);
+        btnSession.setOnClickListener(v -> {
+            if (sessionActive) stopSession(); else startSession();
+        });
+
         initSensors();
         updateStepUi();
         updateShakeUi();
+        updateSessionUi();
+        refreshTotals();
     }
 
     @Override
@@ -104,12 +162,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onResume();
         startSensors();
         historyView.refresh();
+        refreshTotals();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        ticker.removeCallbacks(tickTask);
         historyView.close();
+        dbHelper.close();
     }
 
     /** Reload the history list, e.g. after the session logic saves a new session. */
@@ -241,17 +302,114 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     // =====================================================================
-    // Hooks for the session logic (คนที่ 2) — called whenever a sensor value changes
+    // Hooks for the session logic — called whenever a sensor value changes
     // =====================================================================
 
     /** Called on every new TYPE_STEP_COUNTER reading with the raw cumulative value. */
     protected void onStepCountChanged(long rawStepCount) {
-        // Session logic plugs in here (session delta = rawStepCount - sessionStartSteps).
+        if (!sessionActive) return;
+
+        // ถ้าเริ่ม session ก่อนที่ sensor จะส่งค่าแรกมา ให้ใช้ค่าแรกเป็นฐาน
+        // หรือถ้าค่าลดลง (เครื่องรีบูต/ตัวนับรีเซ็ต) ให้เริ่มฐานใหม่
+        if (sessionStartSteps < 0 || rawStepCount < sessionStartSteps) {
+            sessionStartSteps = rawStepCount;
+        }
+        sessionSteps = rawStepCount - sessionStartSteps;   // ข้อ 3: session delta
+        updateSessionUi();
     }
 
     /** Called once per detected shake with the shake total since the app opened. */
     protected void onShakeDetected(int shakeCount) {
-        // Session logic plugs in here (session delta = shakeCount - sessionStartShakes).
+        if (!sessionActive) return;
+
+        sessionShakes = shakeCount - sessionStartShakes;   // ข้อ 3: session delta
+        updateSessionUi();
+    }
+
+    // =====================================================================
+    // ระบบ Session: ข้อ 3 Session Delta, ข้อ 4 Duration & Average,
+    // ข้อ 5 Total & New Record
+    // =====================================================================
+
+    /** เริ่มกิจกรรมใหม่: จดค่าฐานจาก sensor ตอนนี้ ยอดรวมไม่ถูกแตะ */
+    private void startSession() {
+        sessionActive = true;
+        sessionStartSteps = rawStepCount;      // -1 ถ้ายังไม่มีค่า (จะตั้งทีหลังใน onStepCountChanged)
+        sessionStartShakes = shakeCount;
+        sessionSteps = 0;
+        sessionShakes = 0;
+        sessionStartElapsed = SystemClock.elapsedRealtime();
+        sessionDurationMs = 0;
+
+        ticker.removeCallbacks(tickTask);
+        ticker.postDelayed(tickTask, 1000);
+        updateSessionUi();
+    }
+
+    /** จบกิจกรรม: สรุปผล เช็กสถิติสูงสุด บันทึกลงฐานข้อมูล แล้วอัปเดตยอดรวม */
+    private void stopSession() {
+        if (!sessionActive) return;
+
+        sessionDurationMs = SystemClock.elapsedRealtime() - sessionStartElapsed;
+        sessionActive = false;
+        ticker.removeCallbacks(tickTask);
+
+        long durationSeconds = sessionDurationMs / 1000;
+
+        // ข้อ 5: เทียบสถิติสูงสุด "ก่อน" บันทึก session นี้ลงฐานข้อมูล
+        DBHelper.SessionStats before = dbHelper.getStatistics();
+        boolean newStepRecord = sessionSteps > 0 && sessionSteps > before.maxSteps;
+        boolean newShakeRecord = sessionShakes > 0 && sessionShakes > before.maxShakes;
+
+        long id = dbHelper.insertSession((int) sessionSteps, sessionShakes,
+                durationSeconds, System.currentTimeMillis());
+        if (id < 0) {
+            Log.w(TAG, "Failed to save session");
+            Toast.makeText(this, R.string.session_save_failed, Toast.LENGTH_LONG).show();
+        } else if (newStepRecord || newShakeRecord) {
+            Toast.makeText(this, R.string.new_record_toast, Toast.LENGTH_LONG).show();
+        }
+
+        updateSessionUi();
+        refreshTotals();
+        refreshHistory();
+    }
+
+    /** ข้อ 4: ค่าเฉลี่ยต่อนาที = จำนวน / ระยะเวลา (นาที) กันหารด้วยศูนย์ */
+    private double perMinute(long count) {
+        if (sessionDurationMs <= 0) return 0.0;
+        return count * 60000.0 / sessionDurationMs;
+    }
+
+    private String formatDuration(long ms) {
+        long totalSec = ms / 1000;
+        return String.format(Locale.US, "%02d:%02d:%02d",
+                totalSec / 3600, (totalSec % 3600) / 60, totalSec % 60);
+    }
+
+    /**
+     * ข้อ 5: โหลดยอดรวมและสถิติสูงสุดจากฐานข้อมูลมาแสดงใหม่
+     * เรียกเมื่อเปิดแอป จบ session หรือหลังลบประวัติ (ให้ฝั่งลบเรียกเมธอดนี้ด้วย)
+     */
+    public void refreshTotals() {
+        DBHelper.SessionStats stats = dbHelper.getStatistics();
+        tvTotalSteps.setText(getString(R.string.total_steps_format, stats.totalSteps));
+        tvTotalShakes.setText(getString(R.string.total_shakes_format, stats.totalShakes));
+        tvRecord.setText(getString(R.string.record_format, stats.maxSteps, stats.maxShakes));
+    }
+
+    private void updateSessionUi() {
+        btnSession.setText(sessionActive ? R.string.session_stop : R.string.session_start);
+        tvSessionStatus.setText(sessionActive
+                ? R.string.session_status_running : R.string.session_status_idle);
+        tvSessionSteps.setText(String.valueOf(sessionSteps));
+        tvSessionShakes.setText(String.valueOf(sessionShakes));
+        tvSessionDuration.setText(getString(R.string.session_duration_format,
+                formatDuration(sessionDurationMs)));
+        tvAvgSteps.setText(getString(R.string.avg_steps_format,
+                String.format(Locale.US, "%.1f", perMinute(sessionSteps))));
+        tvAvgShakes.setText(getString(R.string.avg_shakes_format,
+                String.format(Locale.US, "%.1f", perMinute(sessionShakes))));
     }
 
     /** Raw step counter value (steps since boot), or -1 if no reading yet. */
