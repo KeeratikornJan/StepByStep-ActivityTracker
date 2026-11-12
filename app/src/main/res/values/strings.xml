@@ -38,4 +38,12 @@
     <string name="record_format">🏆 สถิติสูงสุดต่อกิจกรรม\n%1$,d ก้าว  •  %2$,d ครั้ง</string>
     <string name="new_record_toast">ทำลายสถิติใหม่!</string>
     <string name="session_save_failed">บันทึกกิจกรรมไม่สำเร็จ</string>
+
+    <!-- Delete session (ข้อ 8) -->
+    <string name="delete_session">ลบกิจกรรมนี้</string>
+    <string name="delete_confirm_title">ลบกิจกรรม?</string>
+    <string name="delete_confirm_message">กิจกรรมนี้จะถูกลบถาวร และยอดรวมกับสถิติสูงสุดจะถูกคำนวณใหม่</string>
+    <string name="delete">ลบ</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="delete_failed">ลบกิจกรรมไม่สำเร็จ</string>
 </resources>

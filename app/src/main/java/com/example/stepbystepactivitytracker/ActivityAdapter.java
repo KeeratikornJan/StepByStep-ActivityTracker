@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +23,8 @@ public class ActivityAdapter
         extends RecyclerView.Adapter<ActivityAdapter.ViewHolder> {
 
     private final Context context;
+    private final DBHelper dbHelper;
+    private final Runnable onDeleted;
     private final ArrayList<Session> sessions = new ArrayList<>();
 
     private final SimpleDateFormat dateFormat =
@@ -40,8 +43,10 @@ public class ActivityAdapter
         public boolean shakeRecord;
     }
 
-    public ActivityAdapter(Context context) {
+    public ActivityAdapter(Context context, DBHelper dbHelper, Runnable onDeleted) {
         this.context = context;
+        this.dbHelper = dbHelper;
+        this.onDeleted = onDeleted;
     }
 
     // ดึงข้อมูล Cursor จาก SQLite
@@ -181,6 +186,9 @@ public class ActivityAdapter
         Button btnClose =
                 view.findViewById(R.id.btnCloseDetail);
 
+        Button btnDelete =
+                view.findViewById(R.id.btnDeleteDetail);
+
         // แสดงข้อมูลจริงจาก SQLite
         tvDate.setText(
                 fullDateFormat.format(new Date(s.timestamp)));
@@ -210,6 +218,22 @@ public class ActivityAdapter
                 .create();
 
         btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        // ข้อ 8: ลบกิจกรรม (ถามยืนยันก่อน) แล้วโหลดรายการและยอดรวมใหม่
+        btnDelete.setOnClickListener(v -> new AlertDialog.Builder(context)
+                .setTitle(R.string.delete_confirm_title)
+                .setMessage(R.string.delete_confirm_message)
+                .setNegativeButton(R.string.cancel, null)
+                .setPositiveButton(R.string.delete, (d, which) -> {
+                    if (dbHelper.deleteSession(s.id)) {
+                        dialog.dismiss();
+                        onDeleted.run();
+                    } else {
+                        Toast.makeText(context, R.string.delete_failed,
+                                Toast.LENGTH_LONG).show();
+                    }
+                })
+                .show());
 
         dialog.show();
     }

@@ -18,11 +18,15 @@ public class ActivityHistoryView {
     private final View rootView;
     private final RecyclerView recyclerView;
     private final TextView tvEmptyHistory;
+    private Runnable onHistoryChanged;
 
     public ActivityHistoryView(Context context, ViewGroup parent) {
 
         dbHelper = new DBHelper(context);
-        adapter = new ActivityAdapter(context);
+        adapter = new ActivityAdapter(context, dbHelper, () -> {
+            refresh();
+            if (onHistoryChanged != null) onHistoryChanged.run();
+        });
 
         rootView = LayoutInflater.from(context)
                 .inflate(R.layout.layout_activity_history, parent, false);
@@ -37,6 +41,11 @@ public class ActivityHistoryView {
                 new LinearLayoutManager(context));
 
         recyclerView.setAdapter(adapter);
+    }
+
+    /** Called after a session is deleted, so the screen can refresh totals/records. */
+    public void setOnHistoryChangedListener(Runnable listener) {
+        onHistoryChanged = listener;
     }
 
     public View getView() {
