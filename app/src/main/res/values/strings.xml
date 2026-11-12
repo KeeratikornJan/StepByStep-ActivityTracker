@@ -18,4 +18,21 @@
     <string name="shake_status_unavailable">อุปกรณ์นี้ไม่มีเซนเซอร์ความเร่ง (Accelerometer)</string>
     <string name="shake_count_label">ครั้งที่เขย่า</string>
     <string name="acceleration_format">ความเร่งปัจจุบัน: %1$s g</string>
+
+    <!-- Session (ข้อ 3-5) -->
+    <string name="session_title">กิจกรรมปัจจุบัน</string>
+    <string name="session_start">เริ่มกิจกรรม</string>
+    <string name="session_stop">จบกิจกรรม</string>
+    <string name="session_status_idle">ยังไม่ได้เริ่มกิจกรรม</string>
+    <string name="session_status_running">กำลังบันทึกกิจกรรม…</string>
+    <string name="session_steps_label">ก้าวในกิจกรรมนี้</string>
+    <string name="session_shakes_label">ครั้งที่เขย่าในกิจกรรมนี้</string>
+    <string name="session_duration_format">ระยะเวลา: %1$s</string>
+    <string name="avg_steps_format">เฉลี่ย: %1$s ก้าว/นาที</string>
+    <string name="avg_shakes_format">เฉลี่ย: %1$s ครั้ง/นาที</string>
+    <string name="total_steps_format">ก้าวรวมทั้งหมด: %1$d</string>
+    <string name="total_shakes_format">เขย่ารวมทั้งหมด: %1$d</string>
+    <string name="record_format">สถิติสูงสุดต่อกิจกรรม: %1$d ก้าว / %2$d ครั้ง</string>
+    <string name="new_record_toast">ทำลายสถิติใหม่!</string>
+    <string name="session_save_failed">บันทึกกิจกรรมไม่สำเร็จ</string>
 </resources>
