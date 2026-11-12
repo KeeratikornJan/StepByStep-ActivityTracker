@@ -30,9 +30,12 @@
     <string name="session_duration_format">ระยะเวลา: %1$s</string>
     <string name="avg_steps_format">เฉลี่ย: %1$s ก้าว/นาที</string>
     <string name="avg_shakes_format">เฉลี่ย: %1$s ครั้ง/นาที</string>
-    <string name="total_steps_format">ก้าวรวมทั้งหมด: %1$d</string>
-    <string name="total_shakes_format">เขย่ารวมทั้งหมด: %1$d</string>
-    <string name="record_format">สถิติสูงสุดต่อกิจกรรม: %1$d ก้าว / %2$d ครั้ง</string>
+    <string name="history_totals_title">ยอดสะสมจากประวัติ</string>
+    <string name="total_steps_label">ก้าวรวมทั้งหมด</string>
+    <string name="total_shakes_label">ครั้งที่เขย่ารวม</string>
+    <string name="total_steps_format">%1$,d</string>
+    <string name="total_shakes_format">%1$,d</string>
+    <string name="record_format">🏆 สถิติสูงสุดต่อกิจกรรม\n%1$,d ก้าว  •  %2$,d ครั้ง</string>
     <string name="new_record_toast">ทำลายสถิติใหม่!</string>
     <string name="session_save_failed">บันทึกกิจกรรมไม่สำเร็จ</string>
 </resources>
