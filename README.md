@@ -109,5 +109,3 @@
     - activity_main.xml
     - strings.xml
 
-
-## DEMO
