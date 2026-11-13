@@ -60,9 +60,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     // ---------- UI ----------
     private TextView tvStepStatus;
     private TextView tvRawSteps;
-    private TextView tvStepsSinceOpen;
     private TextView tvShakeStatus;
-    private TextView tvShakeCount;
     private TextView tvAcceleration;
     private ActivityHistoryView historyView;
 
@@ -124,15 +122,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         tvStepStatus = findViewById(R.id.tvStepStatus);
         tvRawSteps = findViewById(R.id.tvRawSteps);
-        tvStepsSinceOpen = findViewById(R.id.tvStepsSinceOpen);
         tvShakeStatus = findViewById(R.id.tvShakeStatus);
-        tvShakeCount = findViewById(R.id.tvShakeCount);
         tvAcceleration = findViewById(R.id.tvAcceleration);
 
         // ประวัติกิจกรรม (RecyclerView + การ์ด + Dialog รายละเอียด)
         ViewGroup historyContainer = findViewById(R.id.historyContainer);
         historyView = new ActivityHistoryView(this, historyContainer);
         historyContainer.addView(historyView.getView());
+        // ข้อ 8: ลบกิจกรรมแล้วให้คำนวณยอดรวมและสถิติสูงสุดใหม่
+        historyView.setOnHistoryChangedListener(this::refreshTotals);
 
         // ระบบ Session (ข้อ 3-5)
         dbHelper = new DBHelper(this);
@@ -141,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         tvSessionSteps = findViewById(R.id.tvSessionSteps);
         tvSessionShakes = findViewById(R.id.tvSessionShakes);
         tvSessionDuration = findViewById(R.id.tvSessionDuration);
-        tvAvgSteps = findViewById(R.id.tvAvgSteps);
-        tvAvgShakes = findViewById(R.id.tvAvgShakes);
+        tvAvgSteps = findViewById(R.id.tvStepsPerMinute);
+        tvAvgShakes = findViewById(R.id.tvShakesPerMinute);
         tvTotalSteps = findViewById(R.id.tvTotalSteps);
         tvTotalShakes = findViewById(R.id.tvTotalShakes);
         tvRecord = findViewById(R.id.tvRecord);
@@ -152,7 +150,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         initSensors();
         updateStepUi();
-        updateShakeUi();
         updateSessionUi();
         refreshTotals();
     }
@@ -298,7 +295,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         shakeCount++;
         Log.d(TAG, "Shake detected gForce=" + gForce + " count=" + shakeCount);
         onShakeDetected(shakeCount);
-        updateShakeUi();
     }
 
     // =====================================================================
@@ -404,12 +400,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 ? R.string.session_status_running : R.string.session_status_idle);
         tvSessionSteps.setText(String.valueOf(sessionSteps));
         tvSessionShakes.setText(String.valueOf(sessionShakes));
-        tvSessionDuration.setText(getString(R.string.session_duration_format,
-                formatDuration(sessionDurationMs)));
-        tvAvgSteps.setText(getString(R.string.avg_steps_format,
-                String.format(Locale.US, "%.1f", perMinute(sessionSteps))));
-        tvAvgShakes.setText(getString(R.string.avg_shakes_format,
-                String.format(Locale.US, "%.1f", perMinute(sessionShakes))));
+        tvSessionDuration.setText(formatDuration(sessionDurationMs));
+        tvAvgSteps.setText(String.format(Locale.US, "%.1f", perMinute(sessionSteps)));
+        tvAvgShakes.setText(String.format(Locale.US, "%.1f", perMinute(sessionShakes)));
     }
 
     /** Raw step counter value (steps since boot), or -1 if no reading yet. */
@@ -434,10 +427,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private void updateStepUi() {
         tvRawSteps.setText(getString(R.string.raw_steps_format,
                 rawStepCount < 0 ? "-" : String.valueOf(rawStepCount)));
-        tvStepsSinceOpen.setText(String.valueOf(getStepsSinceOpen()));
     }
 
-    private void updateShakeUi() {
-        tvShakeCount.setText(String.valueOf(shakeCount));
-    }
 }
