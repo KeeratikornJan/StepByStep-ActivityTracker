@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">StepByStepActivityTracker</string>
+
+    <!-- Step counter (ข้อ 1) -->
+    <string name="step_title">จำนวนก้าว</string>
+    <string name="step_status_starting">กำลังเริ่มเซนเซอร์นับก้าว…</string>
+    <string name="step_status_running">เซนเซอร์นับก้าวทำงานอยู่</string>
+    <string name="step_status_unavailable">อุปกรณ์นี้ไม่มีเซนเซอร์นับก้าว (TYPE_STEP_COUNTER)</string>
+    <string name="step_status_waiting_permission">กำลังขอสิทธิ์ตรวจจับการเคลื่อนไหว…</string>
+    <string name="step_status_permission_denied">ไม่ได้รับสิทธิ์ตรวจจับการเคลื่อนไหว จึงนับก้าวไม่ได้</string>
+    <string name="steps_since_open_label">ก้าวตั้งแต่เปิดแอป</string>
+    <string name="raw_steps_format">ค่าดิบจากเซนเซอร์ (ตั้งแต่เปิดเครื่อง): %1$s</string>
+
+    <!-- Shake detection (ข้อ 2) -->
+    <string name="shake_title">การเขย่า</string>
+    <string name="shake_status_starting">กำลังเริ่มเซนเซอร์ความเร่ง…</string>
+    <string name="shake_status_running">เซนเซอร์ตรวจจับการเขย่าทำงานอยู่</string>
+    <string name="shake_status_unavailable">อุปกรณ์นี้ไม่มีเซนเซอร์ความเร่ง (Accelerometer)</string>
+    <string name="shake_count_label">ครั้งที่เขย่า</string>
+    <string name="acceleration_format">ความเร่งปัจจุบัน: %1$s g</string>
+
+    <!-- Session (ข้อ 3-5) -->
+    <string name="session_title">กิจกรรมปัจจุบัน</string>
+    <string name="session_start">เริ่มกิจกรรม</string>
+    <string name="session_stop">จบกิจกรรม</string>
+    <string name="session_status_idle">ยังไม่ได้เริ่มกิจกรรม</string>
+    <string name="session_status_running">กำลังบันทึกกิจกรรม…</string>
+    <string name="session_steps_label">ก้าวในกิจกรรมนี้</string>
+    <string name="session_shakes_label">ครั้งที่เขย่าในกิจกรรมนี้</string>
+    <string name="session_duration_format">ระยะเวลา: %1$s</string>
+    <string name="avg_steps_format">เฉลี่ย: %1$s ก้าว/นาที</string>
+    <string name="avg_shakes_format">เฉลี่ย: %1$s ครั้ง/นาที</string>
+    <string name="history_totals_title">ยอดสะสมจากประวัติ</string>
+    <string name="total_steps_label">ก้าวรวมทั้งหมด</string>
+    <string name="total_shakes_label">ครั้งที่เขย่ารวม</string>
+    <string name="total_steps_format">%1$,d</string>
+    <string name="total_shakes_format">%1$,d</string>
+    <string name="record_format">🏆 สถิติสูงสุดต่อกิจกรรม\n%1$,d ก้าว  •  %2$,d ครั้ง</string>
+    <string name="new_record_toast">ทำลายสถิติใหม่!</string>
+    <string name="session_save_failed">บันทึกกิจกรรมไม่สำเร็จ</string>
+
+    <!-- Delete session (ข้อ 8) -->
+    <string name="delete_session">ลบกิจกรรมนี้</string>
+    <string name="delete_confirm_title">ลบกิจกรรม?</string>
+    <string name="delete_confirm_message">กิจกรรมนี้จะถูกลบถาวร และยอดรวมกับสถิติสูงสุดจะถูกคำนวณใหม่</string>
+    <string name="delete">ลบ</string>
+    <string name="cancel">ยกเลิก</string>
+    <string name="delete_failed">ลบกิจกรรมไม่สำเร็จ</string>
+</resources>

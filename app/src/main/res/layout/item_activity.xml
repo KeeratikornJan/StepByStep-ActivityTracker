@@ -1,0 +1,93 @@
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/bg_activity_card"
+    android:elevation="4dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="16dp">
+
+    <!-- ไอคอนกิจกรรม -->
+    <TextView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:background="@drawable/bg_footprint_circle"
+        android:gravity="center"
+        android:text="👣"
+        android:textSize="28sp" />
+
+
+    <!-- ข้อมูลกิจกรรม -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="29 Oct 18:57"
+            android:textColor="#091725"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvDetails"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="12 steps • 7 shakes • 00:13"
+            android:textColor="#009B91"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvAverage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="55.4 steps/min"
+            android:textColor="#009B91"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvStepRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_record_badge"
+            android:padding="5dp"
+            android:text="NEW STEP RECORD"
+            android:textColor="#111111"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvShakeRecord"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/bg_record_badge"
+            android:padding="5dp"
+            android:text="NEW SHAKE RECORD"
+            android:textColor="#111111"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+    <!-- ลูกศรดูรายละเอียด -->
+    <TextView
+        android:layout_width="24dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="›"
+        android:textColor="#091725"
+        android:textSize="32sp" />
+
+</LinearLayout>

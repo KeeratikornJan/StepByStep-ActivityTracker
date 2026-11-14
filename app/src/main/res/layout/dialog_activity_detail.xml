@@ -1,0 +1,160 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="false"
+    android:background="#EAFBFD">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="20dp"
+            android:background="@drawable/bg_activity_card"
+            android:elevation="4dp">
+
+            <!-- ไอคอนรอยเท้า -->
+            <TextView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:gravity="center"
+                android:background="@drawable/bg_footprint_circle"
+                android:text="👣"
+                android:textSize="36sp" />
+
+            <!-- วันที่กิจกรรม -->
+            <TextView
+                android:id="@+id/tvDetailDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center"
+                android:text="29 Oct 2026 18:57"
+                android:textColor="#091725"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+            <!-- ข้อมูลก้าวเดิน -->
+            <TextView
+                android:id="@+id/tvDetailSteps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="14dp"
+                android:background="#E9F9F6"
+                android:text="ก้าวเดิน: 12 ก้าว"
+                android:textColor="#008F86"
+                android:textSize="16sp" />
+
+            <!-- ข้อมูลการเขย่า -->
+            <TextView
+                android:id="@+id/tvDetailShakes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="14dp"
+                android:background="#E9F9F6"
+                android:text="เขย่า: 7 ครั้ง"
+                android:textColor="#008F86"
+                android:textSize="16sp" />
+
+            <!-- ระยะเวลา -->
+            <TextView
+                android:id="@+id/tvDetailDuration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="14dp"
+                android:background="#E9F9F6"
+                android:text="ระยะเวลา: 00:13"
+                android:textColor="#008F86"
+                android:textSize="16sp" />
+
+            <!-- ค่าเฉลี่ย -->
+            <TextView
+                android:id="@+id/tvDetailAverage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:padding="14dp"
+                android:background="#E9F9F6"
+                android:text="เฉลี่ย: 55.4 ก้าว/นาที"
+                android:textColor="#008F86"
+                android:textSize="16sp" />
+
+            <!-- ป้ายสถิติใหม่ -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tvDetailStepRecord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/bg_record_badge"
+                    android:paddingHorizontal="9dp"
+                    android:paddingVertical="7dp"
+                    android:text="NEW STEP RECORD"
+                    android:textColor="#111111"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tvDetailShakeRecord"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_record_badge"
+                    android:paddingHorizontal="9dp"
+                    android:paddingVertical="7dp"
+                    android:text="NEW SHAKE RECORD"
+                    android:textColor="#111111"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!-- ปุ่มลบกิจกรรม (ข้อ 8) -->
+            <Button
+                android:id="@+id/btnDeleteDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:minHeight="52dp"
+                android:backgroundTint="#D64545"
+                android:text="@string/delete_session"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
+
+            <!-- ปุ่มปิดรายละเอียด -->
+            <Button
+                android:id="@+id/btnCloseDetail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:minHeight="52dp"
+                android:backgroundTint="#009B91"
+                android:text="ปิด"
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
